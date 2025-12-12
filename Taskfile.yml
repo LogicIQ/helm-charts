@@ -46,3 +46,19 @@ tasks:
     desc: Clean packaged charts
     cmds:
       - rm -f *.tgz
+
+  release:install-cr:
+    desc: Install chart-releaser binary
+    cmds:
+      - curl -sSLo cr.tar.gz "https://github.com/helm/chart-releaser/releases/download/v1.6.1/chart-releaser_1.6.1_linux_amd64.tar.gz"
+      - tar -xzf cr.tar.gz
+      - sudo mv cr /usr/local/bin/cr
+      - rm cr.tar.gz
+
+  release:manual:
+    desc: Manually release charts (requires GITHUB_TOKEN env var)
+    deps: [release:install-cr]
+    cmds:
+      - cr package charts/pvc-chonker
+      - cr upload --owner logicIQ --git-repo helm-charts --token "$GITHUB_TOKEN"
+      - cr index --owner logicIQ --git-repo helm-charts --token "$GITHUB_TOKEN" --push
