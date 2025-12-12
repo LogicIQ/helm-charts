@@ -4,27 +4,27 @@ tasks:
   pvc-chonker:lint:
     desc: Lint pvc-chonker chart
     cmds:
-      - helm lint ./pvc-chonker
+      - helm lint ./charts/pvc-chonker
 
   pvc-chonker:template:
     desc: Generate pvc-chonker templates
     cmds:
-      - helm template pvc-chonker ./pvc-chonker
+      - helm template pvc-chonker ./charts/pvc-chonker
 
   pvc-chonker:template-debug:
     desc: Generate pvc-chonker templates with debug
     cmds:
-      - helm template pvc-chonker ./pvc-chonker --debug
+      - helm template pvc-chonker ./charts/pvc-chonker --debug
 
   pvc-chonker:package:
     desc: Package pvc-chonker chart
     cmds:
-      - helm package ./pvc-chonker
+      - helm package ./charts/pvc-chonker
 
   pvc-chonker:dry-run:
     desc: Dry-run pvc-chonker installation
     cmds:
-      - helm install pvc-chonker ./pvc-chonker --dry-run --debug
+      - helm install pvc-chonker ./charts/pvc-chonker --dry-run --debug
 
   pvc-chonker:validate:
     desc: Validate pvc-chonker chart
