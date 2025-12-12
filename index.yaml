@@ -1,0 +1,22 @@
+apiVersion: v1
+entries:
+  pvc-chonker:
+  - annotations:
+      artifacthub.io/images: |
+        - name: pvc-chonker
+          image: logiciq/pvc-chonker:0.0.1
+      artifacthub.io/license: Apache-2.0
+    apiVersion: v2
+    appVersion: 0.1.0
+    created: "2025-12-12T06:46:10.364496334Z"
+    description: A cloud-agnostic Kubernetes operator for automatic PVC expansion
+    digest: b169284b0483a2a7d5dcfc1ac4bb1ddafa75357811cc2b24cc8719e278037d48
+    home: https://github.com/logicIQ/pvc-chonker
+    name: pvc-chonker
+    sources:
+    - https://github.com/logicIQ/pvc-chonker
+    type: application
+    urls:
+    - https://github.com/LogicIQ/helm-charts/releases/download/pvc-chonker-0.1.0/pvc-chonker-0.1.0.tgz
+    version: 0.1.0
+generated: "2025-12-12T06:46:10.364503337Z"
