@@ -63,7 +63,7 @@ The following table lists the configurable parameters and their default values.
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
-| `image.repository` | Image repository | `ghcr.io/logiciq/pvc-chonker` |
+| `image.repository` | Image repository | `logiciq/pvc-chonker` |
 | `image.tag` | Image tag | `Chart.AppVersion` |
 | `image.pullPolicy` | Image pull policy | `""` |
 

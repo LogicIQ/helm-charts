@@ -13,5 +13,5 @@ appVersion: "0.1.0"
 annotations:
   artifacthub.io/images: |
     - name: pvc-chonker
-      image: ghcr.io/logiciq/pvc-chonker:0.1.0
+      image: logiciq/pvc-chonker:0.1.0
   artifacthub.io/license: Apache-2.0

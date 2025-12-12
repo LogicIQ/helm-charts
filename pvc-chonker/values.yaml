@@ -1,6 +1,6 @@
 image:
   # image.repository -- pvc-chonker image repository to use.
-  repository: ghcr.io/logiciq/pvc-chonker
+  repository: logiciq/pvc-chonker
 
   # image.tag -- pvc-chonker image tag to use.
   # @default -- `{{ .Chart.AppVersion }}`
