@@ -26,6 +26,14 @@ jobs:
         with:
           version: v3.14.4
 
+      - name: Create gh-pages branch if not exists
+        run: |
+          git checkout --orphan gh-pages || git checkout gh-pages
+          git reset --hard
+          git commit --allow-empty -m "Initial gh-pages commit"
+          git push origin gh-pages || true
+          git checkout main
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         with:
