@@ -1,0 +1,16 @@
+{{- if .Values.serviceAccount.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "pvc-chonker.fullname" . }}-controller
+  labels:
+    {{- include "pvc-chonker.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "pvc-chonker.fullname" . }}-controller
+subjects:
+- kind: ServiceAccount
+  name: {{ template "pvc-chonker.fullname" . }}-controller
+  namespace: {{ .Release.Namespace }}
+{{- end }}

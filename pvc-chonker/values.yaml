@@ -1,0 +1,145 @@
+image:
+  # image.repository -- pvc-chonker image repository to use.
+  repository: ghcr.io/logiciq/pvc-chonker
+
+  # image.tag -- pvc-chonker image tag to use.
+  # @default -- `{{ .Chart.AppVersion }}`
+  tag:  # 0.1.0
+
+  # image.pullPolicy -- pvc-chonker image pullPolicy.
+  pullPolicy:  # Always
+
+  # image.pullSecrets -- Image pull secrets for private registries.
+  pullSecrets: []
+
+controller:
+  # controller.replicas -- Specify the number of replicas of the controller Pod.
+  replicas: 1
+
+  args:
+    # controller.args.metricsBindAddress -- Metrics endpoint address.
+    metricsBindAddress: ":8080"
+
+    # controller.args.healthProbeBindAddress -- Health probe endpoint address.
+    healthProbeBindAddress: ":8081"
+
+    # controller.args.leaderElect -- Enable leader election.
+    leaderElect: false
+
+    # controller.args.kubeletUrl -- Custom kubelet metrics URL (for e2e testing).
+    kubeletUrl: ""
+
+    # controller.args.watchInterval -- Interval for checking PVC usage.
+    watchInterval: "5m"
+
+    # controller.args.defaultThreshold -- Default storage threshold percentage.
+    defaultThreshold: 80
+
+    # controller.args.defaultIncrease -- Default expansion amount.
+    defaultIncrease: "10%"
+
+    # controller.args.defaultCooldown -- Default cooldown period.
+    defaultCooldown: "15m"
+
+    # controller.args.defaultMinScaleUp -- Default minimum scale-up amount.
+    defaultMinScaleUp: "1Gi"
+
+    # controller.args.defaultMaxSize -- Default maximum size limit.
+    defaultMaxSize: ""
+
+    # controller.args.dryRun -- Enable dry run mode (no actual PVC modifications).
+    dryRun: false
+
+    # controller.args.logFormat -- Log format: json or console.
+    logFormat: "json"
+
+    # controller.args.logLevel -- Log level: debug, info, warn, error.
+    logLevel: "info"
+
+    # controller.args.maxParallel -- Maximum parallel PVC operations.
+    maxParallel: 4
+
+    # controller.args.additionalArgs -- Specify additional args.
+    additionalArgs: []
+
+  # controller.resources -- Specify resources.
+  resources:
+    requests:
+      cpu: 100m
+      memory: 64Mi
+    limits:
+      cpu: 500m
+      memory: 128Mi
+
+  # controller.annotations -- Annotations to be added to controller deployment.
+  annotations: {}
+
+  # controller.podLabels -- Pod labels to be added to controller pods.
+  podLabels: {}
+
+  # controller.podAnnotations -- Annotations to be added to controller pods.
+  podAnnotations: {}
+
+  # controller.podSecurityContext -- Security Context to be applied to the controller pods.
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 65532
+    fsGroup: 65532
+
+  # controller.securityContext -- Security Context to be applied to the controller container within controller pods.
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 65532
+    seccompProfile:
+      type: RuntimeDefault
+
+  # controller.terminationGracePeriodSeconds -- Specify terminationGracePeriodSeconds.
+  terminationGracePeriodSeconds: 10
+
+  # controller.tolerations -- Ensure pods are not scheduled on inappropriate nodes.
+  tolerations: []
+
+  # controller.nodeSelector -- Map of key-value pairs for scheduling pods on specific nodes.
+  nodeSelector: {}
+
+  # controller.affinity -- Affinity for controller deployment.
+  affinity: {}
+
+  # controller.priorityClassName -- Priority class name to be applied to the controller pods.
+  priorityClassName: ""
+
+# -- deploy a PodMonitor for Prometheus monitoring.
+podMonitor:
+  # podMonitor.enabled -- If true, creates a Prometheus Operator PodMonitor.
+  enabled: false
+  # podMonitor.scheme -- Scheme to use for scraping.
+  scheme: http
+  # podMonitor.interval -- Interval that Prometheus scrapes metrics.
+  interval: ""
+  # podMonitor.scrapeTimeout -- The timeout after which the scrape is ended
+  scrapeTimeout: ""
+  # podMonitor.namespace -- Namespace which Prometheus is running in.
+  namespace: ""
+  # podMonitor.relabelings -- RelabelConfigs to apply to samples before scraping.
+  relabelings: []
+  # podMonitor.metricRelabelings -- MetricRelabelConfigs to apply to samples before ingestion.
+  metricRelabelings: []
+  # podMonitor.additionalLabels -- Additional labels that can be used so PodMonitor will be discovered by Prometheus.
+  additionalLabels: {}
+
+serviceAccount:
+  # serviceAccount.enabled -- Creates a ServiceAccount for the controller deployment.
+  enabled: true
+  # serviceAccount.automountServiceAccountToken -- Controls the automatic mounting of ServiceAccount API credentials.
+  automountServiceAccountToken: true
+  # serviceAccount.annotations -- Annotations to be added to the service account.
+  annotations: {}
+
+# -- Global chart settings
+nameOverride: ""
+fullnameOverride: ""

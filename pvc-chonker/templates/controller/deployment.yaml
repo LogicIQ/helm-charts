@@ -1,0 +1,140 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "pvc-chonker.fullname" . }}-controller
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "pvc-chonker.labels" . | nindent 4 }}
+  {{- if .Values.controller.annotations}}
+  annotations:
+    {{- toYaml .Values.controller.annotations | nindent 4 }}
+  {{- end }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "pvc-chonker.selectorLabels" . | nindent 6 }}
+  replicas: {{ .Values.controller.replicas }}
+  template:
+    metadata:
+      labels:
+        {{- include "pvc-chonker.labels" . | nindent 8 }}
+        {{- with .Values.controller.podLabels }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- if .Values.controller.podAnnotations}}
+      annotations:
+        {{- toYaml .Values.controller.podAnnotations | nindent 8 }}
+      {{- end }}
+    spec:
+      serviceAccountName: {{ template "pvc-chonker.fullname" . }}-controller
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.controller.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ . }}
+      {{- end }}
+      containers:
+        - name: pvc-chonker
+          command:
+            - /pvc-chonker
+          args:
+            - --metrics-bind-address={{ .Values.controller.args.metricsBindAddress }}
+            - --health-probe-bind-address={{ .Values.controller.args.healthProbeBindAddress }}
+            - --leader-elect={{ .Values.controller.args.leaderElect }}
+            - --watch-interval={{ .Values.controller.args.watchInterval }}
+            - --default-threshold={{ .Values.controller.args.defaultThreshold }}
+            - --default-increase={{ .Values.controller.args.defaultIncrease }}
+            - --default-cooldown={{ .Values.controller.args.defaultCooldown }}
+            - --default-min-scale-up={{ .Values.controller.args.defaultMinScaleUp }}
+            - --dry-run={{ .Values.controller.args.dryRun }}
+            - --log-format={{ .Values.controller.args.logFormat }}
+            - --log-level={{ .Values.controller.args.logLevel }}
+            - --max-parallel={{ .Values.controller.args.maxParallel }}
+          {{- if .Values.controller.args.kubeletUrl }}
+            - --kubelet-url={{ .Values.controller.args.kubeletUrl }}
+          {{- end }}
+          {{- if .Values.controller.args.defaultMaxSize }}
+            - --default-max-size={{ .Values.controller.args.defaultMaxSize }}
+          {{- end }}
+          {{- with .Values.controller.args.additionalArgs -}}
+            {{ toYaml . | nindent 12 }}
+          {{- end }}
+          image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
+          {{- with .Values.image.pullPolicy }}
+          imagePullPolicy: {{ . }}
+          {{- end }}
+          {{- with .Values.controller.resources }}
+          resources: {{ toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: metrics
+              containerPort: 8080
+              protocol: TCP
+            - name: health
+              containerPort: 8081
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: health
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: health
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          env:
+            - name: PVC_CHONKER_METRICS_BIND_ADDRESS
+              value: {{ .Values.controller.args.metricsBindAddress | quote }}
+            - name: PVC_CHONKER_HEALTH_PROBE_BIND_ADDRESS
+              value: {{ .Values.controller.args.healthProbeBindAddress | quote }}
+            - name: PVC_CHONKER_LEADER_ELECT
+              value: {{ .Values.controller.args.leaderElect | quote }}
+            - name: PVC_CHONKER_WATCH_INTERVAL
+              value: {{ .Values.controller.args.watchInterval | quote }}
+            - name: PVC_CHONKER_DEFAULT_THRESHOLD
+              value: {{ .Values.controller.args.defaultThreshold | quote }}
+            - name: PVC_CHONKER_DEFAULT_INCREASE
+              value: {{ .Values.controller.args.defaultIncrease | quote }}
+            - name: PVC_CHONKER_DEFAULT_COOLDOWN
+              value: {{ .Values.controller.args.defaultCooldown | quote }}
+            - name: PVC_CHONKER_DEFAULT_MIN_SCALE_UP
+              value: {{ .Values.controller.args.defaultMinScaleUp | quote }}
+            - name: PVC_CHONKER_DRY_RUN
+              value: {{ .Values.controller.args.dryRun | quote }}
+            - name: PVC_CHONKER_LOG_FORMAT
+              value: {{ .Values.controller.args.logFormat | quote }}
+            - name: PVC_CHONKER_LOG_LEVEL
+              value: {{ .Values.controller.args.logLevel | quote }}
+            - name: PVC_CHONKER_MAX_PARALLEL
+              value: {{ .Values.controller.args.maxParallel | quote }}
+          {{- if .Values.controller.args.kubeletUrl }}
+            - name: PVC_CHONKER_KUBELET_URL
+              value: {{ .Values.controller.args.kubeletUrl | quote }}
+          {{- end }}
+          {{- if .Values.controller.args.defaultMaxSize }}
+            - name: PVC_CHONKER_DEFAULT_MAX_SIZE
+              value: {{ .Values.controller.args.defaultMaxSize | quote }}
+          {{- end }}
+          securityContext:
+            {{- toYaml .Values.controller.securityContext | nindent 12 }}
+    {{- with .Values.controller.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.controller.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      securityContext:
+        {{- toYaml .Values.controller.podSecurityContext | nindent 8 }}
+    {{- with .Values.controller.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.controller.priorityClassName }}
+      priorityClassName: {{ . }}
+    {{- end }}
