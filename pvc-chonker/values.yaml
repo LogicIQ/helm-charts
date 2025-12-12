@@ -143,3 +143,5 @@ serviceAccount:
 # -- Global chart settings
 nameOverride: ""
 fullnameOverride: ""
+
+# Chart version 0.0.1 - Initial release
