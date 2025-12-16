@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "secret-santa.fullname" . }}-controller-metrics
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "secret-santa.labels" . | nindent 4 }}
+spec:
+  ports:
+  - name: metrics
+    port: 8080
+    protocol: TCP
+    targetPort: metrics
+  selector:
+    {{- include "secret-santa.selectorLabels" . | nindent 4 }}

@@ -1,0 +1,143 @@
+image:
+  # image.repository -- secret-santa image repository to use.
+  repository: logiciq/secret-santa
+
+  # image.tag -- secret-santa image tag to use.
+  # @default -- `{{ .Chart.AppVersion }}`
+  tag:  # 0.1.0
+
+  # image.pullPolicy -- secret-santa image pullPolicy.
+  pullPolicy:  # Always
+
+  # image.pullSecrets -- Image pull secrets for private registries.
+  pullSecrets: []
+
+controller:
+  # controller.replicas -- Specify the number of replicas of the controller Pod.
+  replicas: 1
+
+  args:
+    # controller.args.metricsBindAddress -- Metrics endpoint address.
+    metricsBindAddress: ":8080"
+
+    # controller.args.healthProbeBindAddress -- Health probe endpoint address.
+    healthProbeBindAddress: ":8081"
+
+    # controller.args.leaderElect -- Enable leader election.
+    leaderElect: false
+
+    # controller.args.maxConcurrentReconciles -- Maximum concurrent reconciles.
+    maxConcurrentReconciles: 1
+
+    # controller.args.watchNamespaces -- Namespaces to watch (empty = all).
+    watchNamespaces: []
+
+    # controller.args.includeAnnotations -- Required annotations for processing.
+    includeAnnotations: []
+
+    # controller.args.excludeAnnotations -- Excluded annotations for processing.
+    excludeAnnotations: []
+
+    # controller.args.includeLabels -- Required labels for processing.
+    includeLabels: []
+
+    # controller.args.excludeLabels -- Excluded labels for processing.
+    excludeLabels: []
+
+    # controller.args.dryRun -- Enable dry run mode (validate templates without creating secrets).
+    dryRun: false
+
+    # controller.args.logFormat -- Log format: json or console.
+    logFormat: "json"
+
+    # controller.args.logLevel -- Log level: debug, info, warn, error.
+    logLevel: "info"
+
+    # controller.args.additionalArgs -- Specify additional args.
+    additionalArgs: []
+
+  # controller.resources -- Specify resources.
+  resources:
+    requests:
+      cpu: 100m
+      memory: 64Mi
+    limits:
+      cpu: 500m
+      memory: 128Mi
+
+  # controller.annotations -- Annotations to be added to controller deployment.
+  annotations: {}
+
+  # controller.podLabels -- Pod labels to be added to controller pods.
+  podLabels: {}
+
+  # controller.podAnnotations -- Annotations to be added to controller pods.
+  podAnnotations: {}
+
+  # controller.podSecurityContext -- Security Context to be applied to the controller pods.
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 65532
+    fsGroup: 65532
+
+  # controller.securityContext -- Security Context to be applied to the controller container within controller pods.
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 65532
+    seccompProfile:
+      type: RuntimeDefault
+
+  # controller.terminationGracePeriodSeconds -- Specify terminationGracePeriodSeconds.
+  terminationGracePeriodSeconds: 10
+
+  # controller.tolerations -- Ensure pods are not scheduled on inappropriate nodes.
+  tolerations: []
+
+  # controller.nodeSelector -- Map of key-value pairs for scheduling pods on specific nodes.
+  nodeSelector: {}
+
+  # controller.affinity -- Affinity for controller deployment.
+  affinity: {}
+
+  # controller.priorityClassName -- Priority class name to be applied to the controller pods.
+  priorityClassName: ""
+
+# -- deploy a PodMonitor for Prometheus monitoring.
+podMonitor:
+  # podMonitor.enabled -- If true, creates a Prometheus Operator PodMonitor.
+  enabled: false
+  # podMonitor.scheme -- Scheme to use for scraping.
+  scheme: http
+  # podMonitor.interval -- Interval that Prometheus scrapes metrics.
+  interval: ""
+  # podMonitor.scrapeTimeout -- The timeout after which the scrape is ended
+  scrapeTimeout: ""
+  # podMonitor.namespace -- Namespace which Prometheus is running in.
+  namespace: ""
+  # podMonitor.relabelings -- RelabelConfigs to apply to samples before scraping.
+  relabelings: []
+  # podMonitor.metricRelabelings -- MetricRelabelConfigs to apply to samples before ingestion.
+  metricRelabelings: []
+  # podMonitor.additionalLabels -- Additional labels that can be used so PodMonitor will be discovered by Prometheus.
+  additionalLabels: {}
+
+serviceAccount:
+  # serviceAccount.enabled -- Creates a ServiceAccount for the controller deployment.
+  enabled: true
+  # serviceAccount.automountServiceAccountToken -- Controls the automatic mounting of ServiceAccount API credentials.
+  automountServiceAccountToken: true
+  # serviceAccount.annotations -- Annotations to be added to the service account.
+  annotations: {}
+
+crd:
+  # crd.install -- Install the SecretSanta CRD.
+  install: true
+
+# -- Global chart settings
+nameOverride: ""
+fullnameOverride: ""

@@ -1,0 +1,52 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ template "secret-santa.fullname" . }}-manager-role
+  labels:
+    {{- include "secret-santa.labels" . | nindent 4 }}
+rules:
+- apiGroups:
+  - secrets.secret-santa.io
+  resources:
+  - secretsanta
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - secrets.secret-santa.io
+  resources:
+  - secretsanta/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - secrets.secret-santa.io
+  resources:
+  - secretsanta/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
