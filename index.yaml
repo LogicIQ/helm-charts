@@ -19,4 +19,24 @@ entries:
     urls:
     - https://github.com/LogicIQ/helm-charts/releases/download/pvc-chonker-0.1.0/pvc-chonker-0.1.0.tgz
     version: 0.1.0
-generated: "2025-12-12T06:46:10.364503337Z"
+  secret-santa:
+  - annotations:
+      artifacthub.io/images: |
+        - name: secret-santa
+          image: logiciq/secret-santa:0.1.0
+      artifacthub.io/license: Apache-2.0
+    apiVersion: v2
+    appVersion: 0.1.0
+    created: "2025-12-16T08:40:16.358902447Z"
+    description: Kubernetes operator for sensitive data generation with Go template
+      support
+    digest: fc3a0957dd88564bd95615dc3dd27d27535d2b4bab0032f3bc171af66df0b271
+    home: https://github.com/logicIQ/secret-santa
+    name: secret-santa
+    sources:
+    - https://github.com/logicIQ/secret-santa
+    type: application
+    urls:
+    - https://github.com/LogicIQ/helm-charts/releases/download/secret-santa-0.1.0/secret-santa-0.1.0.tgz
+    version: 0.1.0
+generated: "2025-12-16T08:40:16.358907847Z"
