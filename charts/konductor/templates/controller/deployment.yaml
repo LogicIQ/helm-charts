@@ -75,6 +75,11 @@ spec:
               port: health
             initialDelaySeconds: 15
             periodSeconds: 20
+          env:
+            - name: WATCH_NAMESPACE
+              value: {{ .Values.controller.args.watchNamespace | quote }}
+            - name: LOG_LEVEL
+              value: {{ .Values.controller.args.logLevel | quote }}
           securityContext:
             {{- toYaml .Values.controller.securityContext | nindent 12 }}
     {{- with .Values.controller.nodeSelector }}

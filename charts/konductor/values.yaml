@@ -29,6 +29,9 @@ controller:
     # controller.args.leaderElect -- Enable leader election.
     leaderElect: false
 
+    # controller.args.watchNamespace -- Namespace to watch (empty = all).
+    watchNamespace: ""
+
     # controller.args.additionalArgs -- Specify additional args.
     additionalArgs: []
 
