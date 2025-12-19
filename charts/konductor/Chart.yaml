@@ -1,0 +1,17 @@
+apiVersion: v2
+name: konductor
+description: Kubernetes operator for synchronization primitives
+home: https://github.com/logicIQ/konductor
+sources:
+  - https://github.com/logicIQ/konductor
+
+type: application
+
+version: 0.1.0
+appVersion: "0.1.0"
+
+annotations:
+  artifacthub.io/images: |
+    - name: konductor
+      image: logiciq/konductor:0.1.0
+  artifacthub.io/license: Apache-2.0

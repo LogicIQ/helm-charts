@@ -1,0 +1,49 @@
+1. Check the status of the konductor controller:
+   kubectl get pods -n {{ .Release.Namespace }} -l app.kubernetes.io/name={{ include "konductor.name" . }}
+
+2. View the logs:
+   kubectl logs -n {{ .Release.Namespace }} -l app.kubernetes.io/name={{ include "konductor.name" . }}
+
+3. Create synchronization primitives:
+
+   # Create a Semaphore with 3 permits
+   kubectl apply -f - <<EOF
+   apiVersion: sync.konductor.io/v1
+   kind: Semaphore
+   metadata:
+     name: example-semaphore
+     namespace: {{ .Release.Namespace }}
+   spec:
+     permits: 3
+     ttl: "5m"
+   EOF
+
+   # Create a Barrier waiting for 2 arrivals
+   kubectl apply -f - <<EOF
+   apiVersion: sync.konductor.io/v1
+   kind: Barrier
+   metadata:
+     name: example-barrier
+     namespace: {{ .Release.Namespace }}
+   spec:
+     expected: 2
+     timeout: "10m"
+   EOF
+
+   # Create a Lease
+   kubectl apply -f - <<EOF
+   apiVersion: sync.konductor.io/v1
+   kind: Lease
+   metadata:
+     name: example-lease
+     namespace: {{ .Release.Namespace }}
+   spec:
+     ttl: "5m"
+     priority: 1
+   EOF
+
+4. Check the status of your synchronization primitives:
+   kubectl get semaphores,barriers,leases -n {{ .Release.Namespace }}
+
+5. For more examples and documentation, visit:
+   https://github.com/logicIQ/konductor
