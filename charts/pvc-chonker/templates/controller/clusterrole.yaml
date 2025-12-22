@@ -27,6 +27,14 @@ rules:
 - apiGroups:
   - ""
   resources:
+  - persistentvolumeclaims/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - ""
+  resources:
   - nodes
   verbs:
   - get
@@ -48,3 +56,41 @@ rules:
   - get
   - list
   - watch
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - pvc-chonker.io
+  resources:
+  - pvcpolicies
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - pvc-chonker.io
+  resources:
+  - pvcpolicies/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - pvc-chonker.io
+  resources:
+  - pvcpolicies/status
+  verbs:
+  - get
+  - patch
+  - update
