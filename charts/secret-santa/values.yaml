@@ -131,8 +131,45 @@ serviceAccount:
   enabled: true
   # serviceAccount.automountServiceAccountToken -- Controls the automatic mounting of ServiceAccount API credentials.
   automountServiceAccountToken: true
-  # serviceAccount.annotations -- Annotations to be added to the service account.
+  # serviceAccount.annotations -- Annotations to be added to the service account (e.g., for AWS IAM roles).
   annotations: {}
+    # eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/secret-santa-role
+
+aws:
+  # aws.enabled -- Enable AWS integration for KMS secrets.
+  enabled: false
+  # aws.region -- Default AWS region for KMS operations.
+  region: ""
+  # aws.credentials -- AWS credentials configuration.
+  credentials:
+    # aws.credentials.useServiceAccount -- Use service account annotations for AWS credentials (recommended for EKS).
+    useServiceAccount: true
+    # aws.credentials.accessKeyId -- AWS Access Key ID (not recommended, use service account instead).
+    accessKeyId: ""
+    # aws.credentials.secretAccessKey -- AWS Secret Access Key (not recommended, use service account instead).
+    secretAccessKey: ""
+    # aws.credentials.existingSecret -- Name of existing secret containing AWS credentials.
+    existingSecret: ""
+    # aws.credentials.existingSecretKeys -- Keys in the existing secret for AWS credentials.
+    existingSecretKeys:
+      accessKeyId: "access-key-id"
+      secretAccessKey: "secret-access-key"
+
+gcp:
+  # gcp.enabled -- Enable GCP integration for Secret Manager.
+  enabled: false
+  # gcp.projectId -- GCP project ID for Secret Manager operations.
+  projectId: ""
+  # gcp.credentials -- GCP credentials configuration.
+  credentials:
+    # gcp.credentials.useWorkloadIdentity -- Use workload identity for GCP credentials (recommended for GKE).
+    useWorkloadIdentity: true
+    # gcp.credentials.keyFile -- Path to GCP service account key file.
+    keyFile: ""
+    # gcp.credentials.existingSecret -- Name of existing secret containing GCP credentials.
+    existingSecret: ""
+    # gcp.credentials.existingSecretKey -- Key in the existing secret for GCP credentials.
+    existingSecretKey: "key.json"
 
 crd:
   # crd.install -- Install the SecretSanta CRD.

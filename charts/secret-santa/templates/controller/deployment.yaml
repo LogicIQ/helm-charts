@@ -135,8 +135,56 @@ spec:
             - name: SECRET_SANTA_EXCLUDE_LABELS
               value: {{ join "," .Values.controller.args.excludeLabels | quote }}
           {{- end }}
+          {{- if .Values.aws.enabled }}
+            {{- if .Values.aws.region }}
+            - name: AWS_REGION
+              value: {{ .Values.aws.region | quote }}
+            - name: AWS_DEFAULT_REGION
+              value: {{ .Values.aws.region | quote }}
+            {{- end }}
+            {{- if not .Values.aws.credentials.useServiceAccount }}
+              {{- if .Values.aws.credentials.existingSecret }}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.aws.credentials.existingSecret }}
+                  key: {{ .Values.aws.credentials.existingSecretKeys.accessKeyId }}
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.aws.credentials.existingSecret }}
+                  key: {{ .Values.aws.credentials.existingSecretKeys.secretAccessKey }}
+              {{- else if and .Values.aws.credentials.accessKeyId .Values.aws.credentials.secretAccessKey }}
+            - name: AWS_ACCESS_KEY_ID
+              value: {{ .Values.aws.credentials.accessKeyId | quote }}
+            - name: AWS_SECRET_ACCESS_KEY
+              value: {{ .Values.aws.credentials.secretAccessKey | quote }}
+              {{- end }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.gcp.enabled }}
+            {{- if .Values.gcp.projectId }}
+            - name: GCP_PROJECT_ID
+              value: {{ .Values.gcp.projectId | quote }}
+            {{- end }}
+            {{- if not .Values.gcp.credentials.useWorkloadIdentity }}
+              {{- if .Values.gcp.credentials.existingSecret }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: "/etc/gcp/{{ .Values.gcp.credentials.existingSecretKey }}"
+              {{- else if .Values.gcp.credentials.keyFile }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: {{ .Values.gcp.credentials.keyFile | quote }}
+              {{- end }}
+            {{- end }}
+          {{- end }}
           securityContext:
             {{- toYaml .Values.controller.securityContext | nindent 12 }}
+          {{- if and .Values.gcp.enabled .Values.gcp.credentials.existingSecret (not .Values.gcp.credentials.useWorkloadIdentity) }}
+          volumeMounts:
+            - name: gcp-credentials
+              mountPath: /etc/gcp
+              readOnly: true
+          {{- end }}
     {{- with .Values.controller.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -154,3 +202,9 @@ spec:
     {{- with .Values.controller.priorityClassName }}
       priorityClassName: {{ . }}
     {{- end }}
+      {{- if and .Values.gcp.enabled .Values.gcp.credentials.existingSecret (not .Values.gcp.credentials.useWorkloadIdentity) }}
+      volumes:
+        - name: gcp-credentials
+          secret:
+            secretName: {{ .Values.gcp.credentials.existingSecret }}
+      {{- end }}
