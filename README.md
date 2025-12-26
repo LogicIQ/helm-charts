@@ -14,6 +14,8 @@ helm repo update
 ### konductor
 Kubernetes operator for synchronization primitives (Semaphore, Barrier, Lease, Gate)
 
+🌐 **[Project Page](https://logiciq.ca/konductor)**
+
 ```bash
 # Install konductor
 helm install my-konductor logiciq/konductor
@@ -25,6 +27,8 @@ helm install my-konductor logiciq/konductor -f values.yaml
 ### pvc-chonker
 Cloud-agnostic Kubernetes operator for automatic PVC expansion
 
+🌐 **[Project Page](https://logiciq.ca/pvc-chonker)**
+
 ```bash
 # Install pvc-chonker
 helm install pvc-chonker logiciq/pvc-chonker
@@ -35,6 +39,8 @@ helm install pvc-chonker logiciq/pvc-chonker --set controller.args.defaultThresh
 
 ### secret-santa
 Kubernetes operator for sensitive data generation with Go template support
+
+🌐 **[Project Page](https://logiciq.ca/secret-santa)**
 
 ```bash
 # Install secret-santa

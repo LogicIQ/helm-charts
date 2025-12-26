@@ -4,6 +4,8 @@
 
 Kubernetes operator for synchronization primitives
 
+🌐 **[Project Page](https://logiciq.ca/konductor)**
+
 **Homepage:** <https://github.com/logicIQ/konductor>
 
 ## Source Code

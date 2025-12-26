@@ -1,7 +1,7 @@
 apiVersion: v2
 name: secret-santa
 description: Kubernetes operator for sensitive data generation with Go template support
-home: https://github.com/logicIQ/secret-santa
+home: https://logiciq.ca/secret-santa
 sources:
   - https://github.com/logicIQ/secret-santa
 

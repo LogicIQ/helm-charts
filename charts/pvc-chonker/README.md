@@ -2,6 +2,8 @@
 
 A cloud-agnostic Kubernetes operator for automatic PVC expansion. Works with any CSI-compatible storage without external dependencies.
 
+🌐 **[Project Page](https://logiciq.ca/pvc-chonker)**
+
 ## Features
 
 - **Cloud Agnostic**: Works with any CSI-compatible storage

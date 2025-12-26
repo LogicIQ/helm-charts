@@ -4,6 +4,8 @@
 
 Kubernetes operator for sensitive data generation with Go template support
 
+🌐 **[Project Page](https://logiciq.ca/secret-santa)**
+
 **Homepage:** <https://github.com/logicIQ/secret-santa>
 
 ## Source Code

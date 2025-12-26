@@ -1,7 +1,7 @@
 apiVersion: v2
 name: pvc-chonker
 description: A cloud-agnostic Kubernetes operator for automatic PVC expansion
-home: https://github.com/logicIQ/pvc-chonker
+home: https://logiciq.ca/pvc-chonker
 sources:
   - https://github.com/logicIQ/pvc-chonker
 
