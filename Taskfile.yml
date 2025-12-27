@@ -1,64 +1,46 @@
 version: '3'
 
+vars:
+  TEST_NAMESPACE: pvc-chonker-test
+  CHARTS:
+    - charts/konductor
+    - charts/pvc-chonker
+    - charts/secret-santa
+
 tasks:
-  pvc-chonker:lint:
-    desc: Lint pvc-chonker chart
-    cmds:
-      - helm lint ./charts/pvc-chonker
-
-  pvc-chonker:template:
-    desc: Generate pvc-chonker templates
-    cmds:
-      - helm template pvc-chonker ./charts/pvc-chonker
-
-  pvc-chonker:template-debug:
-    desc: Generate pvc-chonker templates with debug
-    cmds:
-      - helm template pvc-chonker ./charts/pvc-chonker --debug
-
-  pvc-chonker:package:
-    desc: Package pvc-chonker chart
-    cmds:
-      - helm package ./charts/pvc-chonker
-
-  pvc-chonker:dry-run:
-    desc: Dry-run pvc-chonker installation
-    cmds:
-      - helm install pvc-chonker ./charts/pvc-chonker --dry-run --debug
-
-  pvc-chonker:validate:
-    desc: Validate pvc-chonker chart
-    cmds:
-      - task: pvc-chonker:lint
-      - task: pvc-chonker:template
-
-  lint-all:
-    desc: Lint all charts
-    cmds:
-      - task: pvc-chonker:lint
-
   validate-all:
-    desc: Validate all charts
+    desc: Validate all Helm charts
     cmds:
-      - task: pvc-chonker:validate
+      - for: { var: CHARTS }
+        cmd: helm lint {{.ITEM}}
+      - for: { var: CHARTS }
+        cmd: helm template {{.ITEM}} --validate
 
-  clean:
-    desc: Clean packaged charts
+  package:
+    desc: Package all Helm charts
     cmds:
-      - rm -f *.tgz
+      - for: { var: CHARTS }
+        cmd: helm package {{.ITEM}}
 
-  release:install-cr:
-    desc: Install chart-releaser binary
+  dry-run:
+    desc: Dry run all Helm charts
     cmds:
-      - curl -sSLo cr.tar.gz "https://github.com/helm/chart-releaser/releases/download/v1.6.1/chart-releaser_1.6.1_linux_amd64.tar.gz"
-      - tar -xzf cr.tar.gz
-      - sudo mv cr /usr/local/bin/cr
-      - rm cr.tar.gz
+      - for: { var: CHARTS }
+        cmd: helm install {{.ITEM | base}} {{.ITEM}} --dry-run --debug --namespace {{.TEST_NAMESPACE}}
 
-  release:manual:
-    desc: Manually release charts (requires GITHUB_TOKEN env var)
-    deps: [release:install-cr]
+  lint:
+    desc: Lint Helm chart
     cmds:
-      - cr package charts/pvc-chonker
-      - cr upload --owner logicIQ --git-repo helm-charts --token "$GITHUB_TOKEN"
-      - cr index --owner logicIQ --git-repo helm-charts --token "$GITHUB_TOKEN" --push
+      - helm lint charts/pvc-chonker
+
+  test:
+    desc: Run chart tests
+    dir: charts/pvc-chonker
+    cmds:
+      - task: test-all
+
+  test-all:
+    desc: Run all tests (lint + chart tests)
+    cmds:
+      - task: lint
+      - task: test

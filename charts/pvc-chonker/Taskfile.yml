@@ -1,0 +1,52 @@
+version: '3'
+
+vars:
+  TEST_NAMESPACE: pvc-chonker-test
+
+tasks:
+  test-cert-generation:
+    desc: Test Helm certificate generation without deployment
+    cmds:
+      - echo "Testing Helm certificate generation..."
+      - helm template pvc-chonker . --set webhook.enabled=true --set webhook.certManager=false --namespace {{.TEST_NAMESPACE}} > /tmp/helm-cert-test.yaml
+      - echo "Verifying certificate secret generation..."
+      - 'grep -q "kind: Secret" /tmp/helm-cert-test.yaml'
+      - 'grep -q "tls.crt:" /tmp/helm-cert-test.yaml'
+      - 'grep -q "tls.key:" /tmp/helm-cert-test.yaml'
+      - 'grep -q "ca.crt:" /tmp/helm-cert-test.yaml'
+      - echo "Verifying webhook CA bundle..."
+      - 'grep -q "caBundle:" /tmp/helm-cert-test.yaml'
+      - echo "Certificate generation test passed!"
+
+  test-cert-validity:
+    desc: Test certificate validity by extracting and validating
+    deps: [test-cert-generation]
+    cmds:
+      - echo "Extracting and validating certificate..."
+      - bash -c 'grep -A 1 "tls.crt:" /tmp/helm-cert-test.yaml | tail -1 | base64 -d | openssl x509 -text -noout | head -10'
+      - echo "Certificate validation passed!"
+
+  test-different-configs:
+    desc: Test certificate generation with different configurations
+    cmds:
+      - echo "Testing cert-manager enabled..."
+      - helm template pvc-chonker . --set webhook.enabled=true --set webhook.certManager=true --namespace {{.TEST_NAMESPACE}} > /tmp/helm-certmanager-test.yaml
+      - 'grep -q "kind: Certificate" /tmp/helm-certmanager-test.yaml'
+      - 'grep -q "kind: Issuer" /tmp/helm-certmanager-test.yaml'
+      - echo "Testing manual certificates..."
+      - helm template pvc-chonker . --set webhook.enabled=true --set webhook.certManager=false --set webhook.caBundle="LS0tLS1CRUdJTi..." --set webhook.tlsSecretName="manual-certs" --namespace {{.TEST_NAMESPACE}} > /tmp/helm-manual-test.yaml
+      - 'grep -q "caBundle: LS0tLS1CRUdJTi..." /tmp/helm-manual-test.yaml'
+      - echo "All configuration tests passed!"
+
+  test-all:
+    desc: Run all chart tests
+    cmds:
+      - task: test-cert-generation
+      - task: test-cert-validity
+      - task: test-different-configs
+      - echo "All chart tests passed!"
+
+  cleanup:
+    desc: Clean up test files
+    cmds:
+      - rm -f /tmp/helm-*-test.yaml
