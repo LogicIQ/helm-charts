@@ -145,3 +145,19 @@ nameOverride: ""
 fullnameOverride: ""
 
 # Chart version 0.0.1 - Initial release
+
+webhook:
+  # webhook.enabled -- Enable admission webhook for PVCGroup mutations.
+  # NOTE: The webhook is REQUIRED for PVCGroup functionality. PVCGroups will not work without the webhook enabled.
+  # The webhook automatically applies PVCGroup template settings to matching PVCs during creation/update.
+  enabled: false
+  # webhook.port -- Port for webhook server.
+  port: 9443
+  # webhook.certDir -- Directory containing TLS certificates.
+  certDir: "/tmp/k8s-webhook-server/serving-certs"
+  # webhook.certManager -- Use cert-manager for certificate generation.
+  certManager: false
+  # webhook.caBundle -- Base64 encoded CA bundle for webhook (optional - auto-generated if not provided).
+  caBundle: ""
+  # webhook.tlsSecretName -- Name of secret containing TLS certificate (optional - auto-generated if not provided).
+  tlsSecretName: ""

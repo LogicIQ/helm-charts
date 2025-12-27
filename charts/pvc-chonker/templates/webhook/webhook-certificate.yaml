@@ -1,0 +1,27 @@
+{{- if and .Values.webhook.enabled .Values.webhook.certManager }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ include "pvc-chonker.fullname" . }}-serving-cert
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "pvc-chonker.labels" . | nindent 4 }}
+spec:
+  dnsNames:
+  - {{ include "pvc-chonker.fullname" . }}-webhook-service.{{ .Release.Namespace }}.svc
+  - {{ include "pvc-chonker.fullname" . }}-webhook-service.{{ .Release.Namespace }}.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: {{ include "pvc-chonker.fullname" . }}-selfsigned-issuer
+  secretName: {{ include "pvc-chonker.fullname" . }}-webhook-server-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: {{ include "pvc-chonker.fullname" . }}-selfsigned-issuer
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "pvc-chonker.labels" . | nindent 4 }}
+spec:
+  selfSigned: {}
+{{- end }}

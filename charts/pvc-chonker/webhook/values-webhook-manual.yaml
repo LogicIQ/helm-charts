@@ -1,0 +1,12 @@
+# Example values for webhook with manual certificates
+# 1. Generate certificates using generate-webhook-certs.sh
+# 2. Apply the generated webhook-secret.yaml
+# 3. Use the CA bundle output in the caBundle field below
+
+webhook:
+  enabled: true
+  certManager: false
+  caBundle: "LS0tLS1CRUdJTi..." # Base64 encoded CA certificate from generate-webhook-certs.sh
+  tlsSecretName: "webhook-server-certs" # Name of secret created by generate-webhook-certs.sh
+
+# Rest of your values...

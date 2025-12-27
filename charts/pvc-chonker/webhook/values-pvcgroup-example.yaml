@@ -1,0 +1,25 @@
+# Example values for using PVCGroups
+# The webhook MUST be enabled for PVCGroups to work
+
+webhook:
+  # Enable webhook for PVCGroup functionality
+  enabled: true
+  # Use auto-generated certificates (simplest option)
+  certManager: false
+
+# Example PVCGroup usage after webhook is enabled:
+# 
+# apiVersion: pvc-chonker.io/v1alpha1
+# kind: PVCGroup
+# metadata:
+#   name: database-group
+# spec:
+#   selector:
+#     matchLabels:
+#       app: database
+#   coordinationPolicy: largest
+#   template:
+#     enabled: true
+#     threshold: "80%"
+#     increase: "25%"
+#     maxSize: "1000Gi"

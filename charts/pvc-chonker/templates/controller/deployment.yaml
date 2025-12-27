@@ -51,6 +51,11 @@ spec:
             - --log-format={{ .Values.controller.args.logFormat }}
             - --log-level={{ .Values.controller.args.logLevel }}
             - --max-parallel={{ .Values.controller.args.maxParallel }}
+          {{- if .Values.webhook.enabled }}
+            - --enable-webhook=true
+            - --webhook-port={{ .Values.webhook.port }}
+            - --webhook-cert-dir={{ .Values.webhook.certDir }}
+          {{- end }}
           {{- if .Values.controller.args.kubeletUrl }}
             - --kubelet-url={{ .Values.controller.args.kubeletUrl }}
           {{- end }}
@@ -74,6 +79,11 @@ spec:
             - name: health
               containerPort: 8081
               protocol: TCP
+          {{- if .Values.webhook.enabled }}
+            - name: webhook-server
+              containerPort: {{ .Values.webhook.port }}
+              protocol: TCP
+          {{- end }}
           readinessProbe:
             httpGet:
               path: /readyz
@@ -111,6 +121,14 @@ spec:
               value: {{ .Values.controller.args.logLevel | quote }}
             - name: PVC_CHONKER_MAX_PARALLEL
               value: {{ .Values.controller.args.maxParallel | quote }}
+          {{- if .Values.webhook.enabled }}
+            - name: PVC_CHONKER_ENABLE_WEBHOOK
+              value: "true"
+            - name: PVC_CHONKER_WEBHOOK_PORT
+              value: {{ .Values.webhook.port | quote }}
+            - name: PVC_CHONKER_WEBHOOK_CERT_DIR
+              value: {{ .Values.webhook.certDir | quote }}
+          {{- end }}
           {{- if .Values.controller.args.kubeletUrl }}
             - name: PVC_CHONKER_KUBELET_URL
               value: {{ .Values.controller.args.kubeletUrl | quote }}
@@ -121,6 +139,19 @@ spec:
           {{- end }}
           securityContext:
             {{- toYaml .Values.controller.securityContext | nindent 12 }}
+          {{- if .Values.webhook.enabled }}
+          volumeMounts:
+            - name: cert
+              mountPath: {{ .Values.webhook.certDir }}
+              readOnly: true
+          {{- end }}
+      {{- if .Values.webhook.enabled }}
+      volumes:
+        - name: cert
+          secret:
+            defaultMode: 420
+            secretName: {{ if .Values.webhook.certManager }}{{ include "pvc-chonker.fullname" . }}-webhook-server-cert{{ else if .Values.webhook.tlsSecretName }}{{ .Values.webhook.tlsSecretName }}{{ else }}{{ include "pvc-chonker.fullname" . }}-webhook-server-cert{{ end }}
+      {{- end }}
     {{- with .Values.controller.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
