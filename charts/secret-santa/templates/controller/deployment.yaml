@@ -44,6 +44,7 @@ spec:
             - --leader-elect={{ .Values.controller.args.leaderElect }}
             - --max-concurrent-reconciles={{ .Values.controller.args.maxConcurrentReconciles }}
             - --dry-run={{ .Values.controller.args.dryRun }}
+            - --enable-metadata={{ .Values.controller.args.enableMetadata }}
             - --log-format={{ .Values.controller.args.logFormat }}
             - --log-level={{ .Values.controller.args.logLevel }}
           {{- if .Values.controller.args.watchNamespaces }}
@@ -111,6 +112,8 @@ spec:
               value: {{ .Values.controller.args.maxConcurrentReconciles | quote }}
             - name: SECRET_SANTA_DRY_RUN
               value: {{ .Values.controller.args.dryRun | quote }}
+            - name: SECRET_SANTA_ENABLE_METADATA
+              value: {{ .Values.controller.args.enableMetadata | quote }}
             - name: SECRET_SANTA_LOG_FORMAT
               value: {{ .Values.controller.args.logFormat | quote }}
             - name: SECRET_SANTA_LOG_LEVEL

@@ -47,6 +47,9 @@ controller:
     # controller.args.dryRun -- Enable dry run mode (validate templates without creating secrets).
     dryRun: false
 
+    # controller.args.enableMetadata -- Enable metadata annotations/tags on generated secrets.
+    enableMetadata: true
+
     # controller.args.logFormat -- Log format: json or console.
     logFormat: "json"
 
