@@ -105,8 +105,27 @@ serviceAccount:
   enabled: true
   # serviceAccount.automountServiceAccountToken -- Controls the automatic mounting of ServiceAccount API credentials.
   automountServiceAccountToken: true
-  # serviceAccount.annotations -- Annotations to be added to the service account.
+  # serviceAccount.annotations -- Annotations to be added to the service account (e.g., for Azure workload identity).
   annotations: {}
+    # azure.workload.identity/client-id: 00000000-0000-0000-0000-000000000000
+
+azure:
+  # azure.enabled -- Enable Azure integration.
+  enabled: false
+  # azure.tenantId -- Azure tenant ID.
+  tenantId: ""
+  # azure.credentials -- Azure credentials configuration.
+  credentials:
+    # azure.credentials.useManagedIdentity -- Use managed identity for Azure credentials (recommended for AKS).
+    useManagedIdentity: true
+    # azure.credentials.clientId -- Azure client ID (not recommended, use managed identity instead).
+    clientId: ""
+    # azure.credentials.clientSecret -- Azure client secret (not recommended, use managed identity instead).
+    clientSecret: ""
+    # azure.credentials.existingSecret -- Name of existing secret containing Azure credentials.
+    existingSecret: ""
+    # azure.credentials.existingSecretKey -- Key in the existing secret for Azure client secret.
+    existingSecretKey: "client-secret"
 
 crd:
   # crd.install -- Install the Konductor CRDs.

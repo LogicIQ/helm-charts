@@ -22,6 +22,26 @@ helm repo update
 helm install my-release logiciq/konductor
 ```
 
+### Azure Integration
+
+For Azure integration, you can configure the chart with Azure credentials:
+
+```bash
+# With managed identity (AKS)
+helm install my-release logiciq/konductor \
+  --set azure.enabled=true \
+  --set azure.tenantId=00000000-0000-0000-0000-000000000000 \
+  --set serviceAccount.annotations."azure\.workload\.identity/client-id"=00000000-0000-0000-0000-000000000000
+
+# With service principal
+helm install my-release logiciq/konductor \
+  --set azure.enabled=true \
+  --set azure.tenantId=00000000-0000-0000-0000-000000000000 \
+  --set azure.credentials.useManagedIdentity=false \
+  --set azure.credentials.clientId=00000000-0000-0000-0000-000000000000 \
+  --set azure.credentials.clientSecret=your-client-secret
+```
+
 ## Uninstalling the Chart
 
 To uninstall/delete the `my-release` deployment:
@@ -40,6 +60,13 @@ The following table lists the configurable parameters of the konductor chart and
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| azure.credentials.clientId | string | `""` | Azure client ID (not recommended, use managed identity instead). |
+| azure.credentials.clientSecret | string | `""` | Azure client secret (not recommended, use managed identity instead). |
+| azure.credentials.existingSecret | string | `""` | Name of existing secret containing Azure credentials. |
+| azure.credentials.existingSecretKey | string | `"client-secret"` | Key in the existing secret for Azure client secret. |
+| azure.credentials.useManagedIdentity | bool | `true` | Use managed identity for Azure credentials (recommended for AKS). |
+| azure.enabled | bool | `false` | Enable Azure integration. |
+| azure.tenantId | string | `""` | Azure tenant ID. |
 | controller.affinity | object | `{}` | Affinity for controller deployment. |
 | controller.annotations | object | `{}` | Annotations to be added to controller deployment. |
 | controller.args.additionalArgs | list | `[]` | Specify additional args. |
@@ -72,7 +99,7 @@ The following table lists the configurable parameters of the konductor chart and
 | podMonitor.relabelings | list | `[]` | RelabelConfigs to apply to samples before scraping. |
 | podMonitor.scheme | string | `"http"` | Scheme to use for scraping. |
 | podMonitor.scrapeTimeout | string | `""` | The timeout after which the scrape is ended |
-| serviceAccount.annotations | object | `{}` | Annotations to be added to the service account. |
+| serviceAccount.annotations | object | `{}` | Annotations to be added to the service account (e.g., for Azure workload identity). |
 | serviceAccount.automountServiceAccountToken | bool | `true` | Controls the automatic mounting of ServiceAccount API credentials. |
 | serviceAccount.enabled | bool | `true` | Creates a ServiceAccount for the controller deployment. |
 

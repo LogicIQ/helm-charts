@@ -80,6 +80,28 @@ spec:
               value: {{ .Values.controller.args.watchNamespace | quote }}
             - name: LOG_LEVEL
               value: {{ .Values.controller.args.logLevel | quote }}
+          {{- if .Values.azure.enabled }}
+            {{- if .Values.azure.tenantId }}
+            - name: AZURE_TENANT_ID
+              value: {{ .Values.azure.tenantId | quote }}
+            {{- end }}
+            {{- if not .Values.azure.credentials.useManagedIdentity }}
+              {{- if .Values.azure.credentials.existingSecret }}
+            - name: AZURE_CLIENT_ID
+              value: {{ .Values.azure.credentials.clientId | quote }}
+            - name: AZURE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.azure.credentials.existingSecret }}
+                  key: {{ .Values.azure.credentials.existingSecretKey }}
+              {{- else if and .Values.azure.credentials.clientId .Values.azure.credentials.clientSecret }}
+            - name: AZURE_CLIENT_ID
+              value: {{ .Values.azure.credentials.clientId | quote }}
+            - name: AZURE_CLIENT_SECRET
+              value: {{ .Values.azure.credentials.clientSecret | quote }}
+              {{- end }}
+            {{- end }}
+          {{- end }}
           securityContext:
             {{- toYaml .Values.controller.securityContext | nindent 12 }}
     {{- with .Values.controller.nodeSelector }}

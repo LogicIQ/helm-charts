@@ -22,6 +22,20 @@ helm install my-konductor logiciq/konductor
 
 # Install with custom values
 helm install my-konductor logiciq/konductor -f values.yaml
+
+# Install with Azure support (managed identity)
+helm install my-konductor logiciq/konductor \
+  --set azure.enabled=true \
+  --set azure.tenantId=00000000-0000-0000-0000-000000000000 \
+  --set serviceAccount.annotations."azure\.workload\.identity/client-id"=00000000-0000-0000-0000-000000000000
+
+# Install with Azure support (service principal)
+helm install my-konductor logiciq/konductor \
+  --set azure.enabled=true \
+  --set azure.tenantId=00000000-0000-0000-0000-000000000000 \
+  --set azure.credentials.useManagedIdentity=false \
+  --set azure.credentials.clientId=00000000-0000-0000-0000-000000000000 \
+  --set azure.credentials.clientSecret=your-client-secret
 ```
 
 ### pvc-chonker
