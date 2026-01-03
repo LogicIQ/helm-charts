@@ -4,6 +4,24 @@ entries:
   - annotations:
       artifacthub.io/images: |
         - name: konductor
+          image: logiciq/konductor:0.2.0
+      artifacthub.io/license: Apache-2.0
+    apiVersion: v2
+    appVersion: 0.2.0
+    created: "2026-01-03T06:54:00.021462032Z"
+    description: Kubernetes operator for synchronization primitives
+    digest: faf392d138b72eab154bc451e302f3eb3998a8be60ace7cd6911f8e6c0a83799
+    home: https://logiciq.ca/konductor
+    name: konductor
+    sources:
+    - https://github.com/logicIQ/konductor
+    type: application
+    urls:
+    - https://github.com/LogicIQ/helm-charts/releases/download/konductor-0.2.0/konductor-0.2.0.tgz
+    version: 0.2.0
+  - annotations:
+      artifacthub.io/images: |
+        - name: konductor
           image: logiciq/konductor:0.1.0
       artifacthub.io/license: Apache-2.0
     apiVersion: v2
@@ -20,6 +38,24 @@ entries:
     - https://github.com/LogicIQ/helm-charts/releases/download/konductor-0.1.0/konductor-0.1.0.tgz
     version: 0.1.0
   pvc-chonker:
+  - annotations:
+      artifacthub.io/images: |
+        - name: pvc-chonker
+          image: logiciq/pvc-chonker:0.3.0
+      artifacthub.io/license: Apache-2.0
+    apiVersion: v2
+    appVersion: 0.3.0
+    created: "2026-01-03T06:54:00.142338556Z"
+    description: A cloud-agnostic Kubernetes operator for automatic PVC expansion
+    digest: c4ab757e31ad2cfbc7f2e3594ad622cc330c3c965dbe3e00a0bd644ad5771e1b
+    home: https://logiciq.ca/pvc-chonker
+    name: pvc-chonker
+    sources:
+    - https://github.com/logicIQ/pvc-chonker
+    type: application
+    urls:
+    - https://github.com/LogicIQ/helm-charts/releases/download/pvc-chonker-0.3.0/pvc-chonker-0.3.0.tgz
+    version: 0.3.0
   - annotations:
       artifacthub.io/images: |
         - name: pvc-chonker
@@ -42,6 +78,25 @@ entries:
   - annotations:
       artifacthub.io/images: |
         - name: secret-santa
+          image: logiciq/secret-santa:0.2.0
+      artifacthub.io/license: Apache-2.0
+    apiVersion: v2
+    appVersion: 0.2.0
+    created: "2026-01-03T06:54:00.263111193Z"
+    description: Kubernetes operator for sensitive data generation with Go template
+      support
+    digest: fdbddf533ea3f1427e5623e2ffbfb7b54420d45440faf35608f793460bec22e3
+    home: https://logiciq.ca/secret-santa
+    name: secret-santa
+    sources:
+    - https://github.com/logicIQ/secret-santa
+    type: application
+    urls:
+    - https://github.com/LogicIQ/helm-charts/releases/download/secret-santa-0.2.0/secret-santa-0.2.0.tgz
+    version: 0.2.0
+  - annotations:
+      artifacthub.io/images: |
+        - name: secret-santa
           image: logiciq/secret-santa:0.1.0
       artifacthub.io/license: Apache-2.0
     apiVersion: v2
@@ -58,4 +113,4 @@ entries:
     urls:
     - https://github.com/LogicIQ/helm-charts/releases/download/secret-santa-0.1.0/secret-santa-0.1.0.tgz
     version: 0.1.0
-generated: "2025-12-19T05:31:25.653839296Z"
+generated: "2026-01-03T06:54:00.263125811Z"
