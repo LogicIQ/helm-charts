@@ -4,30 +4,33 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.20.0
-  name: leaserequests.sync.konductor.io
+  name: onces.sync.konductor.io
 spec:
   group: sync.konductor.io
   names:
-    kind: LeaseRequest
-    listKind: LeaseRequestList
-    plural: leaserequests
-    singular: leaserequest
+    kind: Once
+    listKind: OnceList
+    plural: onces
+    singular: once
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
-    - jsonPath: .spec.lease
-      name: Lease
-      type: string
-    - jsonPath: .spec.holder
-      name: Holder
+    - jsonPath: .status.executed
+      name: Executed
+      type: boolean
+    - jsonPath: .status.executor
+      name: Executor
       type: string
     - jsonPath: .status.phase
       name: Phase
       type: string
+    - jsonPath: .status.executedAt
+      name: ExecutedAt
+      type: date
     name: v1
     schema:
       openAPIV3Schema:
-        description: LeaseRequest is the Schema for the lease requests API
+        description: Once is the Schema for the onces API
         properties:
           apiVersion:
             description: |-
@@ -47,27 +50,14 @@ spec:
           metadata:
             type: object
           spec:
-            description: LeaseRequestSpec defines the desired state of LeaseRequest
+            description: OnceSpec defines the desired state of Once
             properties:
-              holder:
-                description: Holder is the pod/job requesting the lease
-                type: string
-              lease:
-                description: Lease is the name of the lease being requested
-                type: string
-              priority:
-                description: Priority for lease acquisition (higher wins)
-                format: int32
-                type: integer
               ttl:
-                description: TTL is the time-to-live for the lease request
+                description: TTL is the optional time-to-live for cleanup
                 type: string
-            required:
-            - holder
-            - lease
             type: object
           status:
-            description: LeaseRequestStatus defines the observed state of LeaseRequest
+            description: OnceStatus defines the observed state of Once
             properties:
               conditions:
                 description: Conditions represent the latest available observations
@@ -126,14 +116,21 @@ spec:
                   - type
                   type: object
                 type: array
-              phase:
-                description: Phase represents the current state of the request
-                type: string
-              requestedAt:
-                description: RequestedAt is when the request was made
+              executed:
+                description: Executed indicates if the action has been executed
+                type: boolean
+              executedAt:
+                description: ExecutedAt is when the action was executed
                 format: date-time
                 type: string
+              executor:
+                description: Executor is who executed the action
+                type: string
+              phase:
+                description: Phase represents the current state
+                type: string
             required:
+            - executed
             - phase
             type: object
         type: object

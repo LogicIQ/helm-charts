@@ -8,6 +8,39 @@ vars:
     - charts/secret-santa
 
 tasks:
+  update-crds:
+    desc: Update CRDs from source applications
+    cmds:
+      - task: update-konductor-crds
+      - task: update-pvc-chonker-crds
+      - task: update-secret-santa-crds
+
+  update-konductor-crds:
+    desc: Update Konductor CRDs from source
+    cmds:
+      - cp ../konductor/config/crd/bases/sync.konductor.io_arrivals.yaml charts/konductor/templates/arrivals-crd.yaml
+      - cp ../konductor/config/crd/bases/sync.konductor.io_barriers.yaml charts/konductor/templates/barriers-crd.yaml
+      - cp ../konductor/config/crd/bases/sync.konductor.io_gates.yaml charts/konductor/templates/gates-crd.yaml
+      - cp ../konductor/config/crd/bases/sync.konductor.io_leaserequests.yaml charts/konductor/templates/leaserequests-crd.yaml
+      - cp ../konductor/config/crd/bases/sync.konductor.io_leases.yaml charts/konductor/templates/leases-crd.yaml
+      - cp ../konductor/config/crd/bases/sync.konductor.io_mutexes.yaml charts/konductor/templates/mutexes-crd.yaml
+      - cp ../konductor/config/crd/bases/sync.konductor.io_onces.yaml charts/konductor/templates/onces-crd.yaml
+      - cp ../konductor/config/crd/bases/sync.konductor.io_permits.yaml charts/konductor/templates/permits-crd.yaml
+      - cp ../konductor/config/crd/bases/sync.konductor.io_rwmutexes.yaml charts/konductor/templates/rwmutexes-crd.yaml
+      - cp ../konductor/config/crd/bases/sync.konductor.io_semaphores.yaml charts/konductor/templates/semaphores-crd.yaml
+      - cp ../konductor/config/crd/bases/sync.konductor.io_waitgroups.yaml charts/konductor/templates/waitgroups-crd.yaml
+
+  update-pvc-chonker-crds:
+    desc: Update PVC-Chonker CRDs from source
+    cmds:
+      - cp ../pvc-chonker/config/crd/bases/pvc-chonker.io_pvcgroups.yaml charts/pvc-chonker/templates/pvcgroup-crd.yaml
+      - cp ../pvc-chonker/config/crd/bases/pvc-chonker.io_pvcpolicies.yaml charts/pvc-chonker/templates/pvcpolicy-crd.yaml
+
+  update-secret-santa-crds:
+    desc: Update Secret-Santa CRDs from source
+    cmds:
+      - cp ../secret-santa/config/crd/bases/secrets.secret-santa.io_secretsanta.yaml charts/secret-santa/templates/crd.yaml
+
   validate-all:
     desc: Validate all Helm charts
     cmds:

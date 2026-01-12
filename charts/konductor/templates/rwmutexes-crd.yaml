@@ -4,30 +4,33 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.20.0
-  name: leaserequests.sync.konductor.io
+  name: rwmutexes.sync.konductor.io
 spec:
   group: sync.konductor.io
   names:
-    kind: LeaseRequest
-    listKind: LeaseRequestList
-    plural: leaserequests
-    singular: leaserequest
+    kind: RWMutex
+    listKind: RWMutexList
+    plural: rwmutexes
+    singular: rwmutex
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
-    - jsonPath: .spec.lease
-      name: Lease
+    - jsonPath: .status.writeHolder
+      name: WriteHolder
       type: string
-    - jsonPath: .spec.holder
-      name: Holder
+    - jsonPath: .status.readHolders
+      name: Readers
       type: string
     - jsonPath: .status.phase
       name: Phase
       type: string
+    - jsonPath: .status.lockedAt
+      name: Locked
+      type: date
     name: v1
     schema:
       openAPIV3Schema:
-        description: LeaseRequest is the Schema for the lease requests API
+        description: RWMutex is the Schema for the rwmutexes API
         properties:
           apiVersion:
             description: |-
@@ -47,27 +50,14 @@ spec:
           metadata:
             type: object
           spec:
-            description: LeaseRequestSpec defines the desired state of LeaseRequest
+            description: RWMutexSpec defines the desired state of RWMutex
             properties:
-              holder:
-                description: Holder is the pod/job requesting the lease
-                type: string
-              lease:
-                description: Lease is the name of the lease being requested
-                type: string
-              priority:
-                description: Priority for lease acquisition (higher wins)
-                format: int32
-                type: integer
               ttl:
-                description: TTL is the time-to-live for the lease request
+                description: TTL is the optional time-to-live for automatic unlock
                 type: string
-            required:
-            - holder
-            - lease
             type: object
           status:
-            description: LeaseRequestStatus defines the observed state of LeaseRequest
+            description: RWMutexStatus defines the observed state of RWMutex
             properties:
               conditions:
                 description: Conditions represent the latest available observations
@@ -126,12 +116,24 @@ spec:
                   - type
                   type: object
                 type: array
-              phase:
-                description: Phase represents the current state of the request
-                type: string
-              requestedAt:
-                description: RequestedAt is when the request was made
+              expiresAt:
+                description: ExpiresAt is when the lock expires (if TTL is set)
                 format: date-time
+                type: string
+              lockedAt:
+                description: LockedAt is when the lock was acquired
+                format: date-time
+                type: string
+              phase:
+                description: Phase represents the current state of the rwmutex
+                type: string
+              readHolders:
+                description: ReadHolders is the list of current read lock holders
+                items:
+                  type: string
+                type: array
+              writeHolder:
+                description: WriteHolder is the current write lock holder
                 type: string
             required:
             - phase

@@ -4,30 +4,27 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.20.0
-  name: leaserequests.sync.konductor.io
+  name: waitgroups.sync.konductor.io
 spec:
   group: sync.konductor.io
   names:
-    kind: LeaseRequest
-    listKind: LeaseRequestList
-    plural: leaserequests
-    singular: leaserequest
+    kind: WaitGroup
+    listKind: WaitGroupList
+    plural: waitgroups
+    singular: waitgroup
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
-    - jsonPath: .spec.lease
-      name: Lease
-      type: string
-    - jsonPath: .spec.holder
-      name: Holder
-      type: string
+    - jsonPath: .status.counter
+      name: Counter
+      type: integer
     - jsonPath: .status.phase
       name: Phase
       type: string
     name: v1
     schema:
       openAPIV3Schema:
-        description: LeaseRequest is the Schema for the lease requests API
+        description: WaitGroup is the Schema for the waitgroups API
         properties:
           apiVersion:
             description: |-
@@ -47,27 +44,14 @@ spec:
           metadata:
             type: object
           spec:
-            description: LeaseRequestSpec defines the desired state of LeaseRequest
+            description: WaitGroupSpec defines the desired state of WaitGroup
             properties:
-              holder:
-                description: Holder is the pod/job requesting the lease
-                type: string
-              lease:
-                description: Lease is the name of the lease being requested
-                type: string
-              priority:
-                description: Priority for lease acquisition (higher wins)
-                format: int32
-                type: integer
               ttl:
-                description: TTL is the time-to-live for the lease request
+                description: TTL is the optional time-to-live for cleanup
                 type: string
-            required:
-            - holder
-            - lease
             type: object
           status:
-            description: LeaseRequestStatus defines the observed state of LeaseRequest
+            description: WaitGroupStatus defines the observed state of WaitGroup
             properties:
               conditions:
                 description: Conditions represent the latest available observations
@@ -126,14 +110,15 @@ spec:
                   - type
                   type: object
                 type: array
+              counter:
+                description: Counter is the current count
+                format: int32
+                type: integer
               phase:
-                description: Phase represents the current state of the request
-                type: string
-              requestedAt:
-                description: RequestedAt is when the request was made
-                format: date-time
+                description: Phase represents the current state
                 type: string
             required:
+            - counter
             - phase
             type: object
         type: object
