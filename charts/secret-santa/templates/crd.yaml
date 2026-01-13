@@ -93,14 +93,7 @@ spec:
                     type: object
                     x-kubernetes-preserve-unknown-fields: true
                   type:
-                    description: Type specifies the storage backend (k8s, aws-secrets-manager,
-                      aws-parameter-store, azure-key-vault, gcp-secret-manager)
-                    enum:
-                    - k8s
-                    - aws-secrets-manager
-                    - aws-parameter-store
-                    - azure-key-vault
-                    - gcp-secret-manager
+                    description: Type specifies the storage backend
                     minLength: 1
                     type: string
                 required:
@@ -111,15 +104,8 @@ spec:
                   to CR name)
                 type: string
               secretType:
-                description: SecretType sets the Kubernetes secret type (e.g., Opaque,
-                  kubernetes.io/tls)
-                enum:
-                - Opaque
-                - kubernetes.io/tls
-                - kubernetes.io/dockerconfigjson
-                - kubernetes.io/basic-auth
-                - kubernetes.io/ssh-auth
-                - kubernetes.io/service-account-token
+                default: Opaque
+                description: SecretType sets the Kubernetes secret type
                 type: string
               template:
                 description: Template is the Go template string for generating secret
