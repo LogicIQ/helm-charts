@@ -1,0 +1,121 @@
+name: CI Test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.10.0
+
+      - name: Create namespaces
+        run: |
+          kubectl create namespace konductor
+          kubectl create namespace pvc-chonker
+          kubectl create namespace secret-santa
+
+      - name: Save kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          kind export kubeconfig
+          echo "KUBECONFIG_DATA=$(cat ~/.kube/config | base64 -w 0)" >> $GITHUB_ENV
+
+      - name: Upload kubeconfig
+        uses: actions/upload-artifact@v4
+        with:
+          name: kubeconfig
+          path: ~/.kube/config
+
+  test-konductor:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.14.4
+
+      - name: Download kubeconfig
+        uses: actions/download-artifact@v4
+        with:
+          name: kubeconfig
+          path: ~/.kube
+
+      - name: Deploy and verify
+        run: |
+          helm install konductor charts/konductor --namespace konductor --wait --timeout=5m
+          kubectl wait --for=condition=Ready pods -l app.kubernetes.io/name=konductor -n konductor --timeout=120s
+          kubectl get pods -n konductor
+
+  test-pvc-chonker:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.14.4
+
+      - name: Download kubeconfig
+        uses: actions/download-artifact@v4
+        with:
+          name: kubeconfig
+          path: ~/.kube
+
+      - name: Deploy and verify
+        run: |
+          helm install pvc-chonker charts/pvc-chonker --namespace pvc-chonker --wait --timeout=5m
+          kubectl wait --for=condition=Ready pods -l app.kubernetes.io/name=pvc-chonker -n pvc-chonker --timeout=120s
+          kubectl get pods -n pvc-chonker
+
+  test-secret-santa:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.14.4
+
+      - name: Download kubeconfig
+        uses: actions/download-artifact@v4
+        with:
+          name: kubeconfig
+          path: ~/.kube
+
+      - name: Deploy and verify
+        run: |
+          helm install secret-santa charts/secret-santa --namespace secret-santa --wait --timeout=5m
+          kubectl wait --for=condition=Ready pods -l app.kubernetes.io/name=secret-santa -n secret-santa --timeout=120s
+          kubectl get pods -n secret-santa
+
+  summary:
+    needs: [test-konductor, test-pvc-chonker, test-secret-santa]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Download kubeconfig
+        uses: actions/download-artifact@v4
+        with:
+          name: kubeconfig
+          path: ~/.kube
+
+      - name: Show all pods
+        run: kubectl get pods -A
