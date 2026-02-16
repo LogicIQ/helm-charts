@@ -68,8 +68,22 @@ spec:
                       minLength: 1
                       type: string
                     type:
-                      description: Type specifies the generator type (e.g., random_password,
-                        tls_private_key)
+                      description: |-
+                        Type specifies the generator type (e.g., random_password, tls_private_key)
+                        Supported types: random_password, random_string, random_uuid, random_bytes,
+                        random_integer, random_id, tls_private_key, tls_self_signed_cert,
+                        tls_cert_request, tls_locally_signed_cert, crypto_aes_key, crypto_rsa_key,
+                        crypto_ed25519_key, crypto_hmac
+                          tls_private_key;tls_self_signed_cert;tls_cert_request;tls_locally_signed_cert;\
+                          crypto_aes_key;crypto_rsa_key;crypto_ed25519_key;crypto_hmac
+                      enum:
+                      - random_password
+                      - random_string
+                      - random_uuid
+                      - random_bytes
+                      - random_integer
+                      - random_id
+                      - \
                       minLength: 1
                       type: string
                   required:
@@ -93,19 +107,34 @@ spec:
                     type: object
                     x-kubernetes-preserve-unknown-fields: true
                   type:
-                    description: Type specifies the storage backend
+                    description: |-
+                      Type specifies the storage backend
+                      Supported types: k8s, aws-secrets-manager, aws-parameter-store, azure-key-vault, gcp-secret-manager
+                      amazonq-ignore-next-line
+                    enum:
+                    - k8s
+                    - aws-secrets-manager
+                    - aws-parameter-store
+                    - azure-key-vault
+                    - gcp-secret-manager
                     minLength: 1
                     type: string
                 required:
                 - type
                 type: object
               secretName:
-                description: SecretName overrides the default secret name (defaults
-                  to CR name)
+                description: |-
+                  SecretName overrides the default secret name (defaults to CR name)
+                  amazonq-ignore-next-line
+                maxLength: 253
+                minLength: 1
+                pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
                 type: string
               secretType:
                 default: Opaque
-                description: SecretType sets the Kubernetes secret type
+                description: |-
+                  SecretType sets the Kubernetes secret type
+                  amazonq-ignore-next-line
                 type: string
               template:
                 description: Template is the Go template string for generating secret

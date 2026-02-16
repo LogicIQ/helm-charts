@@ -20,7 +20,8 @@ spec:
       type: string
     - jsonPath: .status.readHolders
       name: Readers
-      type: string
+      priority: 1
+      type: integer
     - jsonPath: .status.phase
       name: Phase
       type: string
@@ -54,6 +55,7 @@ spec:
             properties:
               ttl:
                 description: TTL is the optional time-to-live for automatic unlock
+                format: duration
                 type: string
             type: object
           status:

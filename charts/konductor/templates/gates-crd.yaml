@@ -53,16 +53,48 @@ spec:
                   properties:
                     name:
                       description: Name of the resource to check
+                      minLength: 1
                       type: string
                     namespace:
                       description: Namespace of the resource (optional, defaults to
                         gate's namespace)
                       type: string
                     state:
-                      description: State required for the condition to be met
+                      description: |-
+                        State required for the condition to be met
+                        For Job: Complete, Failed, or Active
+                        For Barrier: Open or Closed
+                        For Lease: Acquired or Available
+                        For Gate: Open or Closed
+                        For Mutex: Locked or Unlocked
+                        For Once: Done or Pending
+                        For WaitGroup: Zero or NonZero
+                      enum:
+                      - Complete
+                      - Failed
+                      - Active
+                      - Open
+                      - Closed
+                      - Acquired
+                      - Available
+                      - Locked
+                      - Unlocked
+                      - Done
+                      - Pending
+                      - Zero
+                      - NonZero
                       type: string
                     type:
                       description: Type of condition (Job, Semaphore, Barrier, Lease)
+                      enum:
+                      - Job
+                      - Semaphore
+                      - Barrier
+                      - Lease
+                      - Gate
+                      - Mutex
+                      - Once
+                      - WaitGroup
                       type: string
                     value:
                       description: Value for numeric conditions (e.g., semaphore permits)
@@ -70,12 +102,13 @@ spec:
                       type: integer
                   required:
                   - name
-                  - state
                   - type
                   type: object
+                minItems: 1
                 type: array
               timeout:
                 description: Timeout for waiting for conditions
+                format: duration
                 type: string
             required:
             - conditions

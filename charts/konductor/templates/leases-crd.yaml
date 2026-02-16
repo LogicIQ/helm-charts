@@ -56,8 +56,6 @@ spec:
               ttl:
                 description: TTL is the time-to-live for the lease
                 type: string
-            required:
-            - ttl
             type: object
           status:
             description: LeaseStatus defines the observed state of Lease
@@ -134,7 +132,8 @@ spec:
                 description: Phase represents the current state of the lease
                 type: string
               renewCount:
-                description: RenewCount tracks the number of renewals
+                description: RenewCount tracks the number of times the lease has been
+                  renewed
                 format: int32
                 type: integer
             required:

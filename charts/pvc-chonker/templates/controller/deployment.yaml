@@ -36,8 +36,6 @@ spec:
       {{- end }}
       containers:
         - name: pvc-chonker
-          command:
-            - /pvc-chonker
           args:
             - --metrics-bind-address={{ .Values.controller.args.metricsBindAddress }}
             - --health-probe-bind-address={{ .Values.controller.args.healthProbeBindAddress }}

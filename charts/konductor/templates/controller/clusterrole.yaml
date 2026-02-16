@@ -28,7 +28,11 @@ rules:
   - barriers
   - gates
   - leases
+  - mutexes
+  - onces
+  - rwmutexes
   - semaphores
+  - waitgroups
   verbs:
   - create
   - delete
@@ -43,7 +47,11 @@ rules:
   - barriers/finalizers
   - gates/finalizers
   - leases/finalizers
+  - mutexes/finalizers
+  - onces/finalizers
+  - rwmutexes/finalizers
   - semaphores/finalizers
+  - waitgroups/finalizers
   verbs:
   - update
 - apiGroups:
@@ -53,8 +61,12 @@ rules:
   - gates/status
   - leaserequests/status
   - leases/status
+  - mutexes/status
+  - onces/status
   - permits/status
+  - rwmutexes/status
   - semaphores/status
+  - waitgroups/status
   verbs:
   - get
   - patch

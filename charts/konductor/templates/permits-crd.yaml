@@ -51,10 +51,12 @@ spec:
             properties:
               holder:
                 description: Holder is the pod/job that owns this permit
+                minLength: 1
                 type: string
               semaphore:
                 description: Semaphore is the name of the semaphore this permit belongs
                   to
+                minLength: 1
                 type: string
               ttl:
                 description: TTL is the time-to-live for this permit
@@ -137,6 +139,8 @@ spec:
             required:
             - phase
             type: object
+        required:
+        - spec
         type: object
     served: true
     storage: true

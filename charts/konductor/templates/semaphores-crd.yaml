@@ -69,6 +69,7 @@ spec:
               available:
                 description: Available is the number of available permits
                 format: int32
+                minimum: 0
                 type: integer
               conditions:
                 description: Conditions represent the latest available observations
@@ -130,6 +131,7 @@ spec:
               inUse:
                 description: InUse is the current number of permits in use
                 format: int32
+                minimum: 0
                 type: integer
               phase:
                 description: Phase represents the current state of the semaphore
@@ -139,6 +141,9 @@ spec:
             - inUse
             - phase
             type: object
+            x-kubernetes-validations:
+            - message: inUse and available must be non-negative
+              rule: self.inUse >= 0 && self.available >= 0
         type: object
     served: true
     storage: true

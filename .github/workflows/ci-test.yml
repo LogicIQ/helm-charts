@@ -24,7 +24,9 @@ jobs:
       - name: Deploy and verify
         run: |
           kubectl create namespace konductor
-          helm install konductor charts/konductor --namespace konductor --wait --timeout=5m
+          helm install konductor charts/konductor --namespace konductor
+          sleep 30
+          kubectl get all -n konductor
           kubectl wait --for=condition=Ready pods -l app.kubernetes.io/name=konductor -n konductor --timeout=120s
           kubectl get pods -n konductor
 
@@ -45,7 +47,9 @@ jobs:
       - name: Deploy and verify
         run: |
           kubectl create namespace pvc-chonker
-          helm install pvc-chonker charts/pvc-chonker --namespace pvc-chonker --wait --timeout=5m
+          helm install pvc-chonker charts/pvc-chonker --namespace pvc-chonker
+          sleep 30
+          kubectl get all -n pvc-chonker
           kubectl wait --for=condition=Ready pods -l app.kubernetes.io/name=pvc-chonker -n pvc-chonker --timeout=120s
           kubectl get pods -n pvc-chonker
 
@@ -66,6 +70,8 @@ jobs:
       - name: Deploy and verify
         run: |
           kubectl create namespace secret-santa
-          helm install secret-santa charts/secret-santa --namespace secret-santa --wait --timeout=5m
+          helm install secret-santa charts/secret-santa --namespace secret-santa
+          sleep 30
+          kubectl get all -n secret-santa
           kubectl wait --for=condition=Ready pods -l app.kubernetes.io/name=secret-santa -n secret-santa --timeout=120s
           kubectl get pods -n secret-santa

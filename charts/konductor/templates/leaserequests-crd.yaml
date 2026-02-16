@@ -51,13 +51,16 @@ spec:
             properties:
               holder:
                 description: Holder is the pod/job requesting the lease
+                minLength: 1
                 type: string
               lease:
                 description: Lease is the name of the lease being requested
+                minLength: 1
                 type: string
               priority:
                 description: Priority for lease acquisition (higher wins)
                 format: int32
+                minimum: 0
                 type: integer
               ttl:
                 description: TTL is the time-to-live for the lease request
@@ -128,6 +131,10 @@ spec:
                 type: array
               phase:
                 description: Phase represents the current state of the request
+                enum:
+                - Pending
+                - Granted
+                - Denied
                 type: string
               requestedAt:
                 description: RequestedAt is when the request was made
@@ -136,6 +143,8 @@ spec:
             required:
             - phase
             type: object
+        required:
+        - spec
         type: object
     served: true
     storage: true

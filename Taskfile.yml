@@ -15,6 +15,37 @@ tasks:
       - task: update-pvc-chonker-crds
       - task: update-secret-santa-crds
 
+  update-rbac:
+    desc: Update RBAC from source applications
+    cmds:
+      - task: update-konductor-rbac
+      - task: update-pvc-chonker-rbac
+      - task: update-secret-santa-rbac
+
+  update-konductor-rbac:
+    desc: Update Konductor RBAC from source
+    cmds:
+      - |
+        awk '/^rules:/,0' ../konductor/config/rbac/role.yaml > /tmp/konductor-rules.yaml
+        awk 'NR==1,/^rules:/{print} /^rules:/{exit}' charts/konductor/templates/controller/clusterrole.yaml > /tmp/konductor-header.yaml
+        cat /tmp/konductor-header.yaml /tmp/konductor-rules.yaml > charts/konductor/templates/controller/clusterrole.yaml
+
+  update-pvc-chonker-rbac:
+    desc: Update PVC-Chonker RBAC from source
+    cmds:
+      - |
+        awk '/^rules:/,0' ../pvc-chonker/config/rbac/role.yaml > /tmp/pvc-chonker-rules.yaml
+        awk 'NR==1,/^rules:/{print} /^rules:/{exit}' charts/pvc-chonker/templates/controller/clusterrole.yaml > /tmp/pvc-chonker-header.yaml
+        cat /tmp/pvc-chonker-header.yaml /tmp/pvc-chonker-rules.yaml > charts/pvc-chonker/templates/controller/clusterrole.yaml
+
+  update-secret-santa-rbac:
+    desc: Update Secret-Santa RBAC from source
+    cmds:
+      - |
+        awk '/name: secret-santa-manager-role/,/^---$/{if(/^rules:/){p=1} if(p) print}' ../secret-santa/config/rbac/rbac.yaml > /tmp/secret-santa-rules.yaml
+        awk 'NR==1,/^rules:/{print} /^rules:/{exit}' charts/secret-santa/templates/controller/clusterrole.yaml > /tmp/secret-santa-header.yaml
+        cat /tmp/secret-santa-header.yaml /tmp/secret-santa-rules.yaml > charts/secret-santa/templates/controller/clusterrole.yaml
+
   update-konductor-crds:
     desc: Update Konductor CRDs from source
     cmds:
@@ -66,14 +97,60 @@ tasks:
     cmds:
       - helm lint charts/pvc-chonker
 
-  test:
-    desc: Run chart tests
-    dir: charts/pvc-chonker
+  test-local:
+    desc: Test charts in local kind cluster
+    vars:
+      CHART: '{{.CHART | default "all"}}'
     cmds:
-      - task: test-all
+      - defer: kind delete cluster --name helm-test 2>/dev/null || true
+      - kind create cluster --name helm-test
+      - task: test-chart
+        vars: {CHART: '{{.CHART}}'}
 
-  test-all:
-    desc: Run all tests (lint + chart tests)
+  test-chart:
+    internal: true
+    vars:
+      CHART: '{{.CHART | default "all"}}'
     cmds:
-      - task: lint
-      - task: test
+      - cmd: |
+          case {{.CHART}} in
+            konductor)
+              kubectl create namespace konductor
+              helm install konductor charts/konductor --namespace konductor
+              sleep 30
+              kubectl wait --for=condition=Ready pods -l app.kubernetes.io/name=konductor -n konductor --timeout=120s
+              echo "konductor test passed!"
+              ;;
+            pvc-chonker)
+              kubectl create namespace pvc-chonker
+              helm install pvc-chonker charts/pvc-chonker --namespace pvc-chonker
+              sleep 30
+              kubectl wait --for=condition=Ready pods -l app.kubernetes.io/name=pvc-chonker -n pvc-chonker --timeout=120s
+              echo "pvc-chonker test passed!"
+              ;;
+            secret-santa)
+              kubectl create namespace secret-santa
+              helm install secret-santa charts/secret-santa --namespace secret-santa
+              sleep 30
+              kubectl wait --for=condition=Ready pods -l app.kubernetes.io/name=secret-santa -n secret-santa --timeout=120s
+              echo "secret-santa test passed!"
+              ;;
+            all)
+              kubectl create namespace konductor
+              helm install konductor charts/konductor --namespace konductor
+              kubectl create namespace pvc-chonker
+              helm install pvc-chonker charts/pvc-chonker --namespace pvc-chonker
+              kubectl create namespace secret-santa
+              helm install secret-santa charts/secret-santa --namespace secret-santa
+              sleep 30
+              kubectl wait --for=condition=Ready pods -l app.kubernetes.io/name=konductor -n konductor --timeout=120s
+              kubectl wait --for=condition=Ready pods -l app.kubernetes.io/name=pvc-chonker -n pvc-chonker --timeout=120s
+              kubectl wait --for=condition=Ready pods -l app.kubernetes.io/name=secret-santa -n secret-santa --timeout=120s
+              echo "All tests passed!"
+              ;;
+            *)
+              echo "Unknown chart: {{.CHART}}"
+              echo "Usage: task test-local CHART=[konductor|pvc-chonker|secret-santa|all]"
+              exit 1
+              ;;
+          esac

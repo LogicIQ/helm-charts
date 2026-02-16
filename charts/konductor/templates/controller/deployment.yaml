@@ -39,8 +39,6 @@ spec:
       {{- end }}
       containers:
         - name: manager
-          command:
-            - /manager
           args:
             - --metrics-bind-address={{ .Values.controller.args.metricsBindAddress }}
             - --health-probe-bind-address={{ .Values.controller.args.healthProbeBindAddress }}

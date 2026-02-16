@@ -113,9 +113,13 @@ spec:
               counter:
                 description: Counter is the current count
                 format: int32
+                minimum: 0
                 type: integer
               phase:
                 description: Phase represents the current state
+                enum:
+                - Waiting
+                - Done
                 type: string
             required:
             - counter

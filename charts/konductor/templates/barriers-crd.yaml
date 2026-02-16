@@ -53,10 +53,12 @@ spec:
                 description: Expected is the number of arrivals required to open the
                   barrier
                 format: int32
+                minimum: 1
                 type: integer
               quorum:
                 description: Quorum is the minimum number of arrivals to open (optional)
                 format: int32
+                minimum: 1
                 type: integer
               timeout:
                 description: Timeout is the maximum time to wait for all arrivals
@@ -64,6 +66,11 @@ spec:
             required:
             - expected
             type: object
+            x-kubernetes-validations:
+            - message: quorum must not exceed expected
+              rule: '!has(self.quorum) || self.quorum <= self.expected'
+            - message: timeout must be a valid duration (e.g., 30s, 5m, 1h)
+              rule: '!has(self.timeout) || self.timeout.matches(r''^([0-9]+(\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$'')'
           status:
             description: BarrierStatus defines the observed state of Barrier
             properties:

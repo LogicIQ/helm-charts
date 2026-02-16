@@ -36,8 +36,6 @@ spec:
       {{- end }}
       containers:
         - name: secret-santa
-          command:
-            - /secret-santa
           args:
             - --metrics-bind-address={{ .Values.controller.args.metricsBindAddress }}
             - --health-probe-bind-address={{ .Values.controller.args.healthProbeBindAddress }}
