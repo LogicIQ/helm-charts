@@ -40,30 +40,3 @@ jobs:
           skip_existing: false
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-
-      - name: Add Google Analytics to gh-pages
-        run: |
-          git checkout gh-pages
-          cat > index.html << 'EOF'
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta charset="utf-8">
-            <title>LogicIQ Helm Charts</title>
-            <meta http-equiv="refresh" content="0; url=https://github.com/LogicIQ/helm-charts">
-            <script async src="https://www.googletagmanager.com/gtag/js?id=G-LEHEWN0WHN"></script>
-            <script>
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-LEHEWN0WHN');
-            </script>
-          </head>
-          <body>
-            <p>Redirecting to <a href="https://github.com/LogicIQ/helm-charts">LogicIQ Helm Charts</a>...</p>
-          </body>
-          </html>
-          EOF
-          git add index.html
-          git commit -m "Add Google Analytics" || true
-          git push origin gh-pages
