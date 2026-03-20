@@ -3,7 +3,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.20.0
+    controller-gen.kubebuilder.io/version: v0.20.1
   name: secretsanta.secrets.secret-santa.io
 spec:
   group: secrets.secret-santa.io
@@ -117,6 +117,7 @@ spec:
                     - aws-parameter-store
                     - azure-key-vault
                     - gcp-secret-manager
+                    - hashicorp-vault
                     minLength: 1
                     type: string
                 required:
