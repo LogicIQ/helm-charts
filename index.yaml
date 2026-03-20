@@ -114,6 +114,25 @@ entries:
   - annotations:
       artifacthub.io/images: |
         - name: secret-santa
+          image: logiciq/secret-santa:v0.4.0
+      artifacthub.io/license: Apache-2.0
+    apiVersion: v2
+    appVersion: v0.4.0
+    created: "2026-03-20T05:15:34.151843637Z"
+    description: Kubernetes operator for sensitive data generation with Go template
+      support
+    digest: 3e0044267f2c2738127238c5756738389795ed32a68167f1d9b651ad36e7d38d
+    home: https://logiciq.ca/secret-santa
+    name: secret-santa
+    sources:
+    - https://github.com/logicIQ/secret-santa
+    type: application
+    urls:
+    - https://github.com/LogicIQ/helm-charts/releases/download/secret-santa-0.4.0/secret-santa-0.4.0.tgz
+    version: 0.4.0
+  - annotations:
+      artifacthub.io/images: |
+        - name: secret-santa
           image: logiciq/secret-santa:v0.3.0
       artifacthub.io/license: Apache-2.0
     apiVersion: v2
@@ -168,4 +187,4 @@ entries:
     urls:
     - https://github.com/LogicIQ/helm-charts/releases/download/secret-santa-0.1.0/secret-santa-0.1.0.tgz
     version: 0.1.0
-generated: "2026-02-16T04:59:08.091470461Z"
+generated: "2026-03-20T05:15:34.15186669Z"
